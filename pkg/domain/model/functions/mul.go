@@ -2,6 +2,7 @@ package functions
 
 import (
 	"dezerogo/pkg/domain/model"
+	"dezerogo/pkg/domain/util"
 	"fmt"
 
 	"gonum.org/v1/gonum/mat"
@@ -12,8 +13,14 @@ func Mul(variable1, variable2 *model.Variable) *model.Variable {
 }
 
 func forwardMul(values []*model.Variable, _ []interface{}) []*model.Variable {
+	value1 := values[0].Data
+	value2 := values[1].Data
+	value1, value2, err := util.BroadcastDenses(value1, value2)
+	if err != nil {
+		panic(err)
+	}
 	var result mat.Dense
-	result.MulElem(values[0].Data, values[1].Data)
+	result.MulElem(value1, value2)
 	return []*model.Variable{{Data: &result}}
 }
 

@@ -9,19 +9,19 @@ import (
 	"gonum.org/v1/gonum/mat"
 )
 
-func TestForward(t *testing.T) {
+func TestForwardExp(t *testing.T) {
 	x := model.CreateScalarVariable(2.0)
-	y := forward([]*model.Variable{x}, nil)
+	y := forwardExp([]*model.Variable{x}, nil)
 	assert.Equal(t, mat.NewDense(1, 1, []float64{math.Exp(2.0)}), y[0].Data)
 }
 
-func TestBackward(t *testing.T) {
-	yGrad, err := backward(
+func TestBackwardExp(t *testing.T) {
+	yGrad, err := backwardExp(
 		[]*model.Variable{
 			model.CreateScalarVariable(2.0),
-		}, []*mat.Dense{
-			mat.NewDense(1, 1, []float64{1.0}),
+		}, []*model.Variable{
+			model.CreateScalarVariable(1.0),
 		}, nil)
 	assert.NoError(t, err)
-	assert.Equal(t, mat.NewDense(1, 1, []float64{math.Exp(2.0) * 1}), yGrad[0])
+	assert.Equal(t, mat.NewDense(1, 1, []float64{math.Exp(2.0) * 1}), yGrad[0].Data)
 }
